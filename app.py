@@ -14,7 +14,10 @@ st.set_page_config(
 )
 
 # Configure Gemini AI
-GEMINI_API_KEY = "AIzaSyCK4LaxYfhONqBWfmhFn13NCisLrvkzF58"
+GEMINI_API_KEY = st.secrets.get("GEMINI_API_KEY", "")
+if not GEMINI_API_KEY:
+    st.error("❌ Gemini API key not found. Please add it to .streamlit/secrets.toml")
+    st.stop()
 genai.configure(api_key=GEMINI_API_KEY)
 
 # Initialize the Gemini model
@@ -30,10 +33,12 @@ WEATHER_API_KEY = st.secrets.get("WEATHER_API_KEY", "")
 
 def get_weather_data(city):
     """Fetch weather data for a given city"""
-    if not WEATHER_API_KEY:
+    # Try to get API key from secrets first, then from session state
+    api_key = WEATHER_API_KEY or st.session_state.get('weather_api_key', '')
+    if not api_key:
         return None
     
-    url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={WEATHER_API_KEY}&units=metric"
+    url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
     try:
         response = requests.get(url)
         return response.json() if response.status_code == 200 else None
@@ -100,6 +105,8 @@ with st.sidebar:
         api_key_input = st.text_input("OpenWeatherMap API Key:", type="password")
         if api_key_input:
             st.session_state.weather_api_key = api_key_input
+    else:
+        st.success("✅ Weather API key configured")
     
     # Weather data display
     if city and (WEATHER_API_KEY or st.session_state.get('weather_api_key')):
