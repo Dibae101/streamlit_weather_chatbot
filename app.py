@@ -23,7 +23,7 @@ genai.configure(api_key=GEMINI_API_KEY)
 # Initialize the Gemini model
 @st.cache_resource
 def load_gemini_model():
-    return genai.GenerativeModel('gemini-pro')
+    return genai.GenerativeModel('gemini-1.5-flash')
 
 model = load_gemini_model()
 
@@ -41,8 +41,14 @@ def get_weather_data(city):
     url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
     try:
         response = requests.get(url)
-        return response.json() if response.status_code == 200 else None
-    except:
+        if response.status_code == 200:
+            return response.json()
+        else:
+            # Debug: Log the error response
+            st.error(f"Weather API Error: {response.status_code} - {response.text}")
+            return None
+    except Exception as e:
+        st.error(f"Weather API Exception: {str(e)}")
         return None
 
 def get_weather_prompt():
