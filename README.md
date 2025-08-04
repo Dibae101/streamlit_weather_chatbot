@@ -2,7 +2,7 @@
 
 A simple weather chatbot built with Streamlit and Google's Gemini AI. Ask it anything about weather and get intelligent responses!
 
-![Weather App Interface](images/weather_api_failure.png)
+![Weather App Interface](images/success_api.png)
 
 ## What it does
 
@@ -36,7 +36,7 @@ A simple weather chatbot built with Streamlit and Google's Gemini AI. Ask it any
 
 ## Note
 
-Weather API key might take 1-2 hours to activate after signup. The chat works immediately though!
+Get your free OpenWeatherMap API key at [openweathermap.org](https://openweathermap.org/api) and add it to `.streamlit/secrets.toml`. The chat works immediately, weather data loads once API key is activated!
 
 ---
 
